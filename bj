@@ -1,0 +1,309 @@
+Git学习笔记
+
+@(Git)[Git|Git教程]
+
+Git简介
+
+Q&A
+
+Q：Git是什么？A：版本控制系统
+Q：Git和SVN区别？A：Git是分布式版本控制系统，SVN是集中式版本控制系统
+Q：Git的由来？A：Linus不想用CVS、SVN等集中式版本控制系统，也不想用付费的版本控制系统，故自己开发新的版本控制系统
+集中式vs分布式
+
+集中式：版本库集中存放在中央服务器；联网工作；
+分布式：每个人电脑都有完整版本库；不需要联网工作；
+安装Git
+
+windows
+下载msysgit并安装。
+开始菜单->Git->Git Bash,弹出命令行窗口
+自报家门，在命令行窗口输入： > $ git config --global user.name "Your Name" > > $ git config --global user.email "email@example.com" > > git config命令的--global参数，表示本地这台机器上所有的Git仓库都会使用这个配置，也可以对某个仓库指定不同的用户名和Email地址
+初识Git
+
+本地操作
+
+初始化仓库
+
+$ mkdir learngit
+
+$ cd learngit/
+
+$ git init
+
+Initialized empty Git repository in f:/gitRepo/learngit/.git/
+添加文件到仓库
+
+$ cat readMe.txt
+
+Git is a version control system.
+
+Git is free software.
+
+$ git add readMe.txt
+
+文件添加到暂存区
+
+$ git commit -m 'wrote a readMe file'
+
+文件提交到仓库，-m表示本次提交的说明内容
+
+[master (root-commit) c1e5420] wrote a readMe file
+
+1 file changed, 2 insertions(+)
+
+create mode 100644 readMe.txt
+
+来自http://www.liaoxuefeng.com
+
+工作区（Working Directory）：就是你在电脑里能看到的目录,比如我的learngit文件夹就是一个工作区
+
+版本库（Repository）：工作区有一个隐藏目录“.git”，这个不算工作区，而是Git的版本库。> Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
+
+把文件往Git版本库里添加的时候，是分两步执行的：
+
+第一步是用“git add”把文件添加进去，实际上就是把文件修改添加到暂存区；
+
+第二步是用“git commit”提交更改，实际上就是把暂存区的所有内容提交到当前分支。
+
+因为我们创建Git版本库时，Git自动为我们创建了唯一一个master分支，所以，现在，commit就是往master分支上提交更改。
+工作区状态
+
+$ cat readMe.txt
+
+修改文本内容
+
+Git is a distributed version control system.
+
+Git is free software.
+
+$ git status
+
+当前仓库状态，readMe.txt被修改，未被添加/提交
+
+On branch master
+
+Changes not staged for commit:
+
+(use "git add ..." to update what will be committed)
+
+更新文件到暂存区
+
+(use "git checkout -- ..." to discard changes in working directory)
+
+放弃工作区文件的修改
+
+  modified:   readMe.txt
+no changes added to commit (use "git add" and/or "git commit -a")
+内容区别
+
+$ git diff readMe.txt
+
+diff --git a/readMe.txt b/readMe.txt
+
+index 46d49bf..9247db6 100644
+
+--- a/readMe.txt
+
++++ b/readMe.txt @@ -1,2 +1,2 @@
+
+-Git is a version control system.
+
++Git is a distributed version control system.
+
+Git is free software.
+
+$ git add readMe.txt
+
+$ git status
+
+On branch master
+
+Changes to be committed:
+
+(use "git reset HEAD ..." to unstage)
+
+    modified:   readMe.txt
+历史记录
+
+$ cat readMe.txt
+
+Git is a distributed version control system.
+
+Git is free software distributed under the GPL.
+
+$ git add readMe.txt
+
+$ git commit -m 'append GPL'
+
+$ git log
+
+查看历史记录
+
+commit 16ab9ea730cb584e2ac5f0a709a5e5dc3bb7917e Author: gutan
+
+iamyumingxing@gmail.com Date: Wed Jul 2 16:33:03 2014 +0800
+
+append GPL
+commit 4ac85dd2506a3ecd290f600425cb7af3af902a66 Author: gutan
+
+iamyumingxing@gmail.com Date: Wed Jul 2 16:21:35 2014 +0800
+
+add distributed
+commit c1e54202361f737d967a96659b8f58e6d550b27c Author: gutan
+
+iamyumingxing@gmail.com Date: Wed Jul 2 15:47:31 2014 +0800
+
+wrote a readMe file
+$ git log --pretty=oneline
+
+单行显示
+
+16ab9ea730cb584e2ac5f0a709a5e5dc3bb7917e append GPL
+
+4ac85dd2506a3ecd290f600425cb7af3af902a66 add distributed
+
+c1e54202361f737d967a96659b8f58e6d550b27c wrote a readMe file
+历史命令记录
+
+$ git reflog
+
+4ac85dd HEAD@{0}: reset: moving to 4ac85dd250
+
+16ab9ea HEAD@{1}: commit: append GPL
+
+4ac85dd HEAD@{2}: commit: add distributed
+
+c1e5420 HEAD@{3}: commit (initial): wrote a readMe file
+版本回退
+
+$ git reset --hard 4ac85dd250
+
+4ac85dd250为‘add distributed’版本commit id前几位，回滚到该版本。在Git中，用HEAD表示当前版本，也就是最新的提交“append GPL”版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
+
+HEAD is now at 4ac85dd add distributed
+
+$ cat readMe.txt
+
+已经回滚到‘add distributed’版本
+
+Git is a distributed version control system.
+
+Git is free software.
+撤销修改
+
+$ cat readMe.txt
+
+Git is a distributed version control system.
+
+Git is free software.
+
+Asking for a Raise.新增文字且已添加到暂存区
+
+No Way!新增加文字且未提交到暂存区
+
+$ cat readMe2.txt
+
+Nice to meet you!
+
+Me too!新增加文字且未提交到暂存区
+
+$ git status
+
+On branch master
+
+Changes to be committed:
+
+(use "git reset HEAD ..." to unstage)
+
+    modified:   readMe.txt
+Changes not staged for commit:
+
+(use "git add ..." to update what will be committed)
+
+(use "git checkout -- ..." to discard changes in working directory)
+
+    modified:   readMe.txt
+
+    modified:   readMe2.txt
+$ git checkout -- readMe.txt
+
+readMe.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态
+
+$ git checkout -- readMe2.txt
+
+readMe2.txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态
+
+$ cat readMe.txt
+
+Git is a distributed version control system.
+
+Git is free software.
+
+Asking for a Raise.新增文字且已添加到暂存区
+
+$ cat readMe2.txt
+
+Nice to meet you!
+
+$ git status
+
+On branch master
+
+Changes to be committed:
+
+(use "git reset HEAD ..." to unstage)
+
+    modified:   readMe.txt
+场景1：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout -- file。
+
+场景2：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令git reset HEAD file，就回到了场景1，第二步按场景1操作。
+
+场景3：已经提交了不合适的修改到版本库时，想要撤销本次提交，参考版本回退，不过前提是没有推送到远程库。
+删除文件
+
+$ ls
+
+readMe.txt readMe2.txt test.txt
+
+$ rm test.txt
+
+$ git rm test.txt
+
+rm 'test.txt'
+
+$ git commit -m 'rm test.txt'
+
+[master 83e3e28] rm test.txt
+
+1 file changed, 0 insertions(+), 0 deletions(-)
+
+delete mode 100644 test.txt
+远程操作
+
+预备工作
+
+注册GitHub账号，设置SSH Keys，创建GitHub仓库 GitHub提供Git仓库托管服务的，所以，只要注册一个GitHub账号，就可以免费获得Git远程仓库。本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，所以，需要一点设置（因为GitHub需要识别出你推送的提交确实是你推送的，而不是别人冒充的，而Git支持SSH协议，所以，GitHub只要知道了你的公钥，就可以确认只有你自己才能推送。）：
+
+第1步：创建SSH Key。在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key：
+
+$ ssh-keygen -t rsa -C "youremail@example.com"
+第2步：登陆GitHub，打开“Account settings”，“SSH Keys”页面： 然后，点“Add SSH Key”，填上任意Title，在Key文本框里粘贴id_rsa.pub文件的内容
+
+第3步：创建GitHub仓库“learngit”
+
+将本地仓库内容推送到GitHub仓库“learngit”
+
+$ git remote add origin git@github.com:gutan/learngit.git
+
+本地仓库与远程仓库“learngit”关联,origin为远程库名字
+
+SSH方式还是HTTPS方式。在版本库的SSH方式和HTTPS方式是不同的，具体来说就是url信息的不同，但是，实际的认证机制也是不同的。当建立了本机密钥之后，使用ssh方式实际上是不需要再次认证的，而https则每次需要输入密码。比如，上面的url = git@github.com:user/rep.git使用的是ssh方式，那么我进入一个版本库中,push到远程的时候，是不需要输入用户名和密码的，这个只在你初始时候使用到。而如果我的url是以https方式来做的话，如url = https://github.com/user/rep.git，这样我在进行更新，push或者pull的时候，都会提示你输入GitHub的帐号和密码的。实际上，GitHub是鼓励使用ssh方式的，在官方文档也有说明，不过对于无法使用ssh服务的地方来说，https又多了一种方式，给用户也带来了方便。
+
+$ git push -u origin master
+
+本地仓库的所有内容推送到远程库上
+
+$ git push origin master
+
+以后只要提交到本地仓库，就可以通过以下命令，推送本地仓库内容到远程仓库
