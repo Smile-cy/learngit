@@ -7,5 +7,5 @@ Git tracks changes of file
 Creating a new branch is quick and simple
 
 =======
-Creating a new branch is quick and simple
+Creating a new branch is quick & simple
 >>>>>>> feature1
